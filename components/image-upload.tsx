@@ -49,7 +49,7 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
   })
 
   return (
-    <Card className="mt-4 bg-purple-50/50 border-purple-100">
+    <Card className="mt-4 bg-purple-50/50 border-[1.4px] border-[#00000017]">
       <CardContent className="p-4">
         <div
           {...getRootProps()}

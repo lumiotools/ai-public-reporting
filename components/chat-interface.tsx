@@ -6,8 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { ImageUpload } from "./image-upload"
-import { SummaryDisplay } from "./summary-display"
-import { ArrowUpRight, Paperclip, Send } from "lucide-react"
+import { ArrowUpRight, Paperclip } from "lucide-react"
 import Image from "next/image"
 import ReactMarkdown from "react-markdown"
 
@@ -24,11 +23,31 @@ export function ChatInterface() {
   const [isTyping, setIsTyping] = useState(false)
   const [showImageUpload, setShowImageUpload] = useState(false)
   const imageUploadRef = useRef<{ clearImage: () => void } | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth"});
-  },[]);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [])
+
+  const parseStreamChunk = (chunk: string) => {
+    try {
+      const lines = chunk.split("\n")
+      let content = ""
+
+      for (const line of lines) {
+        if (line.startsWith("0:")) {
+          // Remove the '0:' prefix and any surrounding quotes
+          const cleanedContent = line.slice(2).replace(/^"/, "").replace(/"$/, "")
+          // Replace escaped newlines with actual newlines
+          content += cleanedContent.replace(/\\n/g, "\n")
+        }
+      }
+      return content
+    } catch (error) {
+      console.error("Error parsing chunk:", error)
+      return ""
+    }
+  }
 
   const handleSendMessage = async () => {
     if (!input.trim() && !base64Image) return
@@ -65,18 +84,30 @@ export function ChatInterface() {
       if (!response.ok) {
         throw new Error("Failed to get response from AI")
       }
+      setIsTyping(false)
 
-      const data = await response.json()
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          role: "assistant",
-          content: [{ type: "text", text: data.message }],
-        },
-      ])
+      const reader = response.body?.getReader()
+      const decoder = new TextDecoder()
 
-      if (data.summary) {
-        setSummary(data.summary)
+      if (!reader) throw new Error("No reader available")
+
+      let accumulatedContent = ""
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value)
+        const parsedContent = parseStreamChunk(chunk)
+        accumulatedContent += parsedContent
+
+        setMessages((prev) => {
+          const lastMessage = prev[prev.length - 1]
+          if (lastMessage.role === "assistant") {
+            return [...prev.slice(0, -1), { ...lastMessage, content: [{ type: "text", text: accumulatedContent }] }]
+          }
+          return [...prev, { role: "assistant", content: [{ type: "text", text: accumulatedContent }] }]
+        })
       }
     } catch (error) {
       console.error("Error:", error)
@@ -97,12 +128,12 @@ export function ChatInterface() {
     }
   }
 
-  useEffect(()=>{
-    scrollToBottom();
-  },[messages, showImageUpload])
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, showImageUpload, isTyping]) // Added isTyping to dependencies
 
   return (
-    <Card className="w-full max-w-3xl mx-auto shadow-xl bg-white/80 backdrop-blur-sm rounded-lg border-purple-100 font-poppins">
+    <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-3xl bg-white/80 backdrop-blur-sm border-[1.4px] border-[#00000017] font-poppins">
       <CardContent className="p-6">
         <ScrollArea className="h-[500px] w-full pr-4">
           <div className="p-4 space-y-4">
@@ -121,7 +152,9 @@ export function ChatInterface() {
                 <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
                     className={`max-w-[80%] rounded-2xl px-6 py-3 shadow-sm ${
-                      message.role === "user" ? "bg-[#362864ED] border-[1.4px] border-[#852FFF69] text-white" : "bg-purple-50 border-[1.4px] border-[#00000017] text-[#1E1E1E]"
+                      message.role === "user"
+                        ? "bg-[#362864ED] border-[1.4px] border-[#852FFF69] text-white"
+                        : "bg-purple-50 border-[1.4px] border-[#00000017] text-[#1E1E1E]"
                     }`}
                   >
                     {message.content.map((content, contentIndex) => (
@@ -157,13 +190,12 @@ export function ChatInterface() {
               </div>
             )}
           </div>
-        {showImageUpload && <ImageUpload ref={imageUploadRef} onImageUpload={setBase64Image} />}
-        <div ref={messagesEndRef}/>
+          {showImageUpload && <ImageUpload ref={imageUploadRef} onImageUpload={setBase64Image} />}
+          <div ref={messagesEndRef} />
         </ScrollArea>
-        
       </CardContent>
-      <CardFooter className="flex items-center gap-2 p-4 border-t border-purple-100">
-        <div className="flex items-center w-full bg-purple-50/50 rounded-full border border-purple-100 overflow-hidden h-[48px] ">
+      <CardFooter className="flex items-center gap-2 p-4 border-t border-[1.4px] border-[#00000017]">
+        <div className="flex items-center w-full bg-purple-50/50 rounded-full border-[1.4px] border-[#00000017] overflow-hidden h-[48px] ">
           <Button
             variant="ghost"
             size="icon"

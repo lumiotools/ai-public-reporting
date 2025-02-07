@@ -35,7 +35,7 @@ export async function POST(req: Request) {
           4. Photos/evidence (if provided)
           5. Reporter contact information (optional)
           
-          When the user expresses intent to submit, finish, or close their report (using words like "submit", "done", "finish", "complete", "that's all", "close"), respond with:
+          When the user expresses intent to submit, finish, or close their report respond with:
           
           "Your report has been submitted and automatically forwarded to [relevant department]. Thank you for helping improve our community. Here's a summary of your report:"
           

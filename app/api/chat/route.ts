@@ -14,8 +14,15 @@ export async function POST(req: Request) {
       messages: [
         {
           role: "system",
-          content:
-            "You are an AI assistant helping users report local issues. Guide them through the reporting process, asking for relevant details. At the end, provide a structured summary of the report. Format your responses using markdown for better readability.",
+          content: `You are an AI assistant helping users report local issues. Guide them through the reporting process, asking for relevant details. 
+            
+            When the user expresses intent to submit, finish, or close their report (using words like "submit", "done", "finish", "complete", "that's all", "close"), respond with:
+            "Your report has been submitted. Thank you for helping improve our community. Here's a summary of your report:"
+            
+            Then provide a brief, structured summary of the reported issue using markdown.
+            
+            For all other interactions, continue gathering relevant information about the issue being reported.
+            Format your responses using markdown for better readability.`,
         },
         ...messages,
       ],
@@ -28,28 +35,22 @@ export async function POST(req: Request) {
       throw new Error("No response generated from the AI model");
     }
 
-    // Check if this is the final message and generate a summary
-    const isFinalMessage = assistantMessage
-      .toLowerCase()
-      .includes("thank you for your report");
+    // Check if this is the final message by looking for the submission confirmation
+    const isFinalMessage = assistantMessage.includes(
+      "Your report has been submitted"
+    );
     let summary = null;
 
     if (isFinalMessage) {
-      const summaryCompletion = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [
-          {
-            role: "system",
-            content:
-              "Generate a concise, structured summary of the following report using markdown formatting. Include key details such as the type of issue, location, and any other relevant information.",
-          },
-          ...messages,
-          { role: "assistant", content: assistantMessage },
-        ],
-        max_tokens: 250,
-      });
-
-      summary = summaryCompletion.choices[0]?.message?.content || null;
+      // Extract the summary from the submission message
+      const summaryStart = assistantMessage.indexOf(
+        "Here's a summary of your report:"
+      );
+      if (summaryStart !== -1) {
+        summary = assistantMessage
+          .slice(summaryStart + "Here's a summary of your report:".length)
+          .trim();
+      }
     }
 
     return NextResponse.json({ message: assistantMessage, summary });

@@ -3,11 +3,9 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Use the new route segment config syntax
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   const uploadDir = path.join(process.cwd(), "tmp", "uploads");

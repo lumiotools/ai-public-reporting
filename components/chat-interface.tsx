@@ -190,7 +190,7 @@ export function ChatInterface() {
           </Button>
         </div>
       </CardFooter>
-      {summary && <SummaryDisplay summary={summary} />}
+      {/* {summary && <SummaryDisplay summary={summary} />} */}
     </Card>
   )
 }

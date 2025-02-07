@@ -29,25 +29,25 @@ export function ChatInterface() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [])
 
-  const parseStreamChunk = (chunk: string) => {
-    try {
-      const lines = chunk.split("\n")
-      let content = ""
+  // const parseStreamChunk = (chunk: string) => {
+  //   try {
+  //     const lines = chunk.split("\n")
+  //     let content = ""
 
-      for (const line of lines) {
-        if (line.startsWith("0:")) {
-          // Remove the '0:' prefix and any surrounding quotes
-          const cleanedContent = line.slice(2).replace(/^"/, "").replace(/"$/, "")
-          // Replace escaped newlines with actual newlines
-          content += cleanedContent.replace(/\\n/g, "\n")
-        }
-      }
-      return content
-    } catch (error) {
-      console.error("Error parsing chunk:", error)
-      return ""
-    }
-  }
+  //     for (const line of lines) {
+  //       if (line.startsWith("0:")) {
+  //         // Remove the '0:' prefix and any surrounding quotes
+  //         const cleanedContent = line.slice(2).replace(/^"/, "").replace(/"$/, "")
+  //         // Replace escaped newlines with actual newlines
+  //         content += cleanedContent.replace(/\\n/g, "\n")
+  //       }
+  //     }
+  //     return content
+  //   } catch (error) {
+  //     console.error("Error parsing chunk:", error)
+  //     return ""
+  //   }
+  // }
 
   const handleSendMessage = async () => {
     if (!input.trim() && !base64Image) return
@@ -84,31 +84,45 @@ export function ChatInterface() {
       if (!response.ok) {
         throw new Error("Failed to get response from AI")
       }
-      setIsTyping(false)
 
-      const reader = response.body?.getReader()
-      const decoder = new TextDecoder()
+      const data = await response.json()
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        {
+          role: "assistant",
+          content: [{ type: "text", text: data.message }],
+        },
+      ])
 
-      if (!reader) throw new Error("No reader available")
-
-      let accumulatedContent = ""
-
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) break
-
-        const chunk = decoder.decode(value)
-        const parsedContent = parseStreamChunk(chunk)
-        accumulatedContent += parsedContent
-
-        setMessages((prev) => {
-          const lastMessage = prev[prev.length - 1]
-          if (lastMessage.role === "assistant") {
-            return [...prev.slice(0, -1), { ...lastMessage, content: [{ type: "text", text: accumulatedContent }] }]
-          }
-          return [...prev, { role: "assistant", content: [{ type: "text", text: accumulatedContent }] }]
-        })
+      if (data.summary) {
+        setSummary(data.summary)
       }
+      
+      // setIsTyping(false)
+
+      // const reader = response.body?.getReader()
+      // const decoder = new TextDecoder()
+
+      // if (!reader) throw new Error("No reader available")
+
+      // let accumulatedContent = ""
+
+      // while (true) {
+      //   const { done, value } = await reader.read()
+      //   if (done) break
+
+      //   const chunk = decoder.decode(value)
+      //   const parsedContent = parseStreamChunk(chunk)
+      //   accumulatedContent += parsedContent
+
+      //   setMessages((prev) => {
+      //     const lastMessage = prev[prev.length - 1]
+      //     if (lastMessage.role === "assistant") {
+      //       return [...prev.slice(0, -1), { ...lastMessage, content: [{ type: "text", text: accumulatedContent }] }]
+      //     }
+      //     return [...prev, { role: "assistant", content: [{ type: "text", text: accumulatedContent }] }]
+      //   })
+      // }
     } catch (error) {
       console.error("Error:", error)
       setMessages((prevMessages) => [

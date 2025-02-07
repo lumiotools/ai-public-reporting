@@ -1,18 +1,15 @@
-import { streamText } from "ai"
-import { openai } from "@ai-sdk/openai"
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
+import OpenAI from "openai";
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(req: Request) {
-  const { messages } = await req.json()
+  const { messages } = await req.json();
   try {
-    // Ensure messages are in the correct format
-    const formattedMessages = messages.map((message: any) => ({
-      role: message.role,
-      content: typeof message.content === "string" ? message.content : message.content[0].text,
-    }))
-
-    const result = streamText({
-      model: openai("gpt-4o-mini"),
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -46,21 +43,47 @@ export async function POST(req: Request) {
           - Description
           
           For all other interactions, continue gathering relevant information about the issue being reported.
-          Format your responses using markdown for better readability.`,
+          Format your responses using markdown for better readability.
+          
+          If the user asks about the description of image uploaded or any info from the image he uploaded, try to understand the uploaded image and provide the information accordingly.
+          
+          `,
         },
-        ...formattedMessages,
+        ...messages,
       ],
-    })
-    return result.toDataStreamResponse({
-      headers: {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache",
-        Connection: "keep-alive",
-      },
-    })
+      max_tokens: 300,
+    });
+
+    const assistantMessage = completion.choices[0]?.message?.content;
+
+    if (!assistantMessage) {
+      throw new Error("No response generated from the AI model");
+    }
+
+    // Check if this is the final message by looking for the submission confirmation
+    const isFinalMessage = assistantMessage.includes(
+      "Your report has been submitted"
+    );
+    let summary = null;
+
+    if (isFinalMessage) {
+      // Extract the summary from the submission message
+      const summaryStart = assistantMessage.indexOf(
+        "Here's a summary of your report:"
+      );
+      if (summaryStart !== -1) {
+        summary = assistantMessage
+          .slice(summaryStart + "Here's a summary of your report:".length)
+          .trim();
+      }
+    }
+
+    return NextResponse.json({ message: assistantMessage, summary });
   } catch (error) {
-    console.error("Error:", error)
-    return NextResponse.json({ error: "An error occurred while processing your request" }, { status: 500 })
+    console.error("Error:", error);
+    return NextResponse.json(
+      { error: "An error occurred while processing your request." },
+      { status: 500 }
+    );
   }
 }
-

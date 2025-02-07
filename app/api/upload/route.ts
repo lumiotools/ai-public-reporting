@@ -1,65 +1,63 @@
-import { NextResponse } from "next/server"
-import { IncomingForm } from "formidable"
-import { promises as fs } from "fs"
-import path from "path"
-import { v4 as uuidv4 } from "uuid"
-import { Readable } from "stream"
+import { NextResponse } from "next/server";
+import { writeFile, mkdir } from "fs/promises";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
 
 export const config = {
   api: {
     bodyParser: false,
   },
-}
+};
 
 export async function POST(req: Request) {
-  const uploadDir = path.join(process.cwd(), "tmp", "uploads")
+  const uploadDir = path.join(process.cwd(), "tmp", "uploads");
 
   try {
     // Ensure the upload directory exists
-    await fs.mkdir(uploadDir, { recursive: true })
+    await mkdir(uploadDir, { recursive: true });
 
-    const form = new IncomingForm({
-      uploadDir,
-      keepExtensions: true,
-      maxFileSize: 10 * 1024 * 1024, // 10MB limit
-    })
-
-    const readable = new Readable()
-    readable._read = () => {} // _read is required but you can noop it
-    readable.push(await req.arrayBuffer())
-    readable.push(null)
-
-    const [fields, files] = await new Promise<[any, any]>((resolve, reject) => {
-      form.parse(readable, (err, fields, files) => {
-        if (err) reject(err)
-        resolve([fields, files])
-      })
-    })
-
-    const file = files.file?.[0] // Assuming the file input name is "file"
+    const formData = await req.formData();
+    const file = formData.get("file") as File;
 
     if (!file) {
-      throw new Error("No file uploaded")
+      return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // Generate a unique filename
-    const uniqueFilename = `${uuidv4()}${path.extname(file.originalFilename || "")}`
-    const newPath = path.join(uploadDir, uniqueFilename)
+    // Validate file size (10MB limit)
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json(
+        { error: "File size exceeds 10MB limit" },
+        { status: 400 }
+      );
+    }
 
-    // Move the file to the new path
-    await fs.rename(file.filepath, newPath)
+    // Generate a unique filename with original extension
+    const ext = path.extname(file.name);
+    const uniqueFilename = `${uuidv4()}${ext}`;
+    const newPath = path.join(uploadDir, uniqueFilename);
 
-    // In a real-world scenario, you would upload the file to a cloud storage service here
-    // For this example, we'll just return the local path
-    const fileUrl = `/uploads/${uniqueFilename}`
+    // Convert File to Buffer and write to filesystem
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    await writeFile(newPath, buffer);
 
-    // Clean up the temporary file
-    // await fs.unlink(newPath)
+    // Generate the URL for the uploaded file
+    const fileUrl = `/uploads/${uniqueFilename}`;
 
-    return NextResponse.json({ url: fileUrl })
+    // In a production environment, you would:
+    // 1. Upload the file to cloud storage (S3, GCS, etc.)
+    // 2. Delete the local file after successful cloud upload
+    // 3. Return the cloud storage URL instead of local path
+
+    return NextResponse.json({
+      url: fileUrl,
+      filename: file.name,
+      size: file.size,
+      type: file.type,
+    });
   } catch (error) {
-    console.error("Error uploading file:", error)
-    return NextResponse.json({ error: "File upload failed" }, { status: 500 })
+    console.error("Error uploading file:", error);
+    return NextResponse.json({ error: "File upload failed" }, { status: 500 });
   }
 }
-

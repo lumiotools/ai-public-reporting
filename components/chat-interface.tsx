@@ -133,7 +133,7 @@ export function ChatInterface() {
   }, [messages, showImageUpload, isTyping]) // Added isTyping to dependencies
 
   return (
-    <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-3xl bg-white/80 backdrop-blur-sm border-[#00000017] font-poppins">
+    <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-3xl bg-white/80 backdrop-blur-sm border-[#00000017] border-[1.4px] font-poppins">
       <CardContent className="p-6">
         <ScrollArea className="h-[500px] w-full pr-4">
           <div className="p-4 space-y-4">
@@ -194,8 +194,8 @@ export function ChatInterface() {
           <div ref={messagesEndRef} />
         </ScrollArea>
       </CardContent>
-      <CardFooter className="flex items-center gap-2 p-4 border-t border-purple-100">
-        <div className="flex items-center w-full bg-purple-50/50 rounded-full border border-purple-100 overflow-hidden h-[48px] ">
+      <CardFooter className="flex items-center gap-2 p-4 border-t border-[#00000017]">
+        <div className="flex items-center w-full bg-purple-50/50 rounded-full border-[#00000017] border-[1.4px] overflow-hidden h-[48px] ">
           <Button
             variant="ghost"
             size="icon"

@@ -150,7 +150,10 @@ export function ChatInterface() {
             )}
             {isTyping && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl px-6 py-3 border-[1.4px] border-[#00000017] bg-purple-50 text-[#1E1E1E]">Thinking...</div>
+                <div className="max-w-[80%] rounded-2xl px-6 py-3 border-[1.4px] border-[#00000017] bg-purple-50 text-[#1E1E1E]">
+                  <span className="animate-pulse">Thinking</span>
+                  <span className="animate-pulse">...</span>
+                </div>
               </div>
             )}
           </div>

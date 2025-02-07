@@ -6,14 +6,14 @@ interface SummaryDisplayProps {
 
 export function SummaryDisplay({ summary }: SummaryDisplayProps) {
   return (
-    <Card className="mt-4 bg-primary/10">
-      <CardHeader>
-        <CardTitle className="text-primary">Report Summary</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm">{summary}</p>
-      </CardContent>
-    </Card>
+    <Card className="mt-4 bg-purple-50/50 border-purple-100">
+    <CardHeader className="pb-2">
+      <CardTitle className="text-purple-900 text-lg">Report Summary</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <p className="text-sm text-purple-700">{summary}</p>
+    </CardContent>
+  </Card>
   )
 }
 

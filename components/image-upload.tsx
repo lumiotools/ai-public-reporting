@@ -49,15 +49,17 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
   })
 
   return (
-    <Card className="mt-4 bg-muted/5">
+    <Card className="mt-4 bg-purple-50/50 border-purple-100">
       <CardContent className="p-4">
         <div
           {...getRootProps()}
           className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors duration-200 ${
-            isDragActive ? "border-primary bg-primary/5" : "border-muted-foreground/20 hover:border-primary/50"
+            isDragActive ? "border-[#1E1E1E80] bg-purple-50" : "border-[#1E1E1E80] hover:border-[#362864]"
           }`}
         >
-          <input {...getInputProps()} />
+         <input {...{...getInputProps(), style:{
+          display:"none"
+         }}}  />
           {preview ? (
             <div className="relative w-full h-48">
               <Image
@@ -70,13 +72,13 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
             </div>
           ) : (
             <div className="space-y-2">
-              <ImageIcon className="mx-auto h-10 w-10 text-muted-foreground/50" />
+              <ImageIcon className="mx-auto h-10 w-10 text-[#362864]" />
               {isDragActive ? (
-                <p className="text-sm text-muted-foreground">Drop the image here...</p>
+                <p className="text-sm text-[#362864]">Drop the image here...</p>
               ) : (
                 <div className="space-y-1">
-                  <p className="text-sm font-medium">Drop image here or click to upload</p>
-                  <p className="text-xs text-muted-foreground">Supports JPG, PNG, GIF up to 10MB</p>
+                  <p className="text-sm font-medium text-[#362864]">Drop image here or click to upload</p>
+                  <p className="text-xs text-[#1E1E1E80]">Supports JPG, PNG, GIF up to 10MB</p>
                 </div>
               )}
             </div>
@@ -84,7 +86,12 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
         </div>
         {preview && (
           <div className="mt-4 flex justify-end">
-            <Button variant="destructive" size="sm" onClick={clearImage} className="gap-2">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={clearImage}
+              className="gap-2 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
+            >
               <X className="h-4 w-4" />
               Remove image
             </Button>

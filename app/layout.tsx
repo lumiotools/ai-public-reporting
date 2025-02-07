@@ -1,10 +1,14 @@
 import "./globals.css"
-import { Inter } from "next/font/google"
+import { Poppins } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ModeToggle } from "@/components/mode-toggle"
 import type React from "react" // Added import for React
 
-const inter = Inter({ subsets: ["latin"] })
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+})
 
 export const metadata = {
   title: "AI-Powered Public Reporting System",
@@ -18,8 +22,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <body className={poppins.className}>
+        {/* <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <div className="min-h-screen bg-background font-sans antialiased">
             <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="container flex h-14 items-center">
@@ -32,9 +36,9 @@ export default function RootLayout({
                 <ModeToggle />
               </div>
             </header>
-            <main>{children}</main>
           </div>
-        </ThemeProvider>
+        </ThemeProvider> */}
+        {children}
       </body>
     </html>
   )

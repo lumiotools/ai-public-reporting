@@ -133,7 +133,7 @@ export function ChatInterface() {
   }, [messages, showImageUpload, isTyping]) // Added isTyping to dependencies
 
   return (
-    <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-3xl bg-white/80 backdrop-blur-sm border-[#00000017] border-[1.4px] font-poppins">
+    <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-[16px] bg-white/70 backdrop-blur-sm border-[#00000017] border-[1.4px] font-poppins">
       <CardContent className="p-6">
         <ScrollArea className="h-[500px] w-full pr-4">
           <div className="p-4 space-y-4">
@@ -154,7 +154,7 @@ export function ChatInterface() {
                     className={`max-w-[80%] rounded-2xl px-6 py-3 shadow-sm ${
                       message.role === "user"
                         ? "bg-[#362864ED] border-[1.4px] border-[#852FFF69] text-white"
-                        : "bg-purple-50 border-[1.4px] border-[#00000017] text-[#1E1E1E]"
+                        : "bg-[#EBEBEB0D] border-[1.4px] border-[#00000017] text-[#1E1E1E]"
                     }`}
                   >
                     {message.content.map((content, contentIndex) => (

@@ -16,16 +16,16 @@ const MobileNav = () => {
       </SheetTrigger>
       <SheetContent side="right" className="w-[300px] sm:w-[400px]">
         <nav className="flex flex-col gap-4">
-          <Link href="/" className="text-lg font-semibold" onClick={handleLinkClick}>
+          <Link href="/" className="text-lg text-[#362864] font-semibold" onClick={handleLinkClick}>
             Citizens Reporting
           </Link>
-          <Link href="/#features" className="text-lg" onClick={handleLinkClick}>
+          <Link href="/#features" className="text-lg text-[#362864]" onClick={handleLinkClick}>
             Features
           </Link>
-          <Link href="/#benefits" className="text-lg" onClick={handleLinkClick}>
+          <Link href="/#benefits" className="text-lg text-[#362864]" onClick={handleLinkClick}>
             Benefits
           </Link>
-          <Link href="/report" className="text-lg" onClick={handleLinkClick}>
+          <Link href="/report" className="text-lg text-[#362864]" onClick={handleLinkClick}>
             Report Issue
           </Link>
         </nav>

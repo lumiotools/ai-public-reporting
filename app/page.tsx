@@ -8,7 +8,7 @@ export default function PotholeReportAnalysis() {
       <main className="container mx-auto pb-10 px-4 sm:px-6 lg:px-8">
         {/* Intro Section */}
         <section className="space-y-6 text-center mb-12 mt-8 sm:mt-16">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#362864] dark:text-white">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-[#362864] dark:text-white">
             Report and Analyze Potholes with AI
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#1E1E1E80] dark:text-gray-300 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

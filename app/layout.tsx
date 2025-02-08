@@ -28,7 +28,7 @@ export default function RootLayout({
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
             <div className="container mx-auto flex h-14 items-center justify-between">
               <Link href="/" className="flex items-center space-x-2">
-                <span className="font-bold text-[#25313D]">Citizens Reporting</span>
+                <span className="font-semibold text-[#25313D]">Citizens Reporting</span>
               </Link>
               <nav className="hidden md:block">
                 <ul className="flex space-x-6">

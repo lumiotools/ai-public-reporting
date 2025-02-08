@@ -47,7 +47,7 @@ export default function PotholeReportAnalysis() {
         {/* Benefits Section */}
         <section id="benefits" className="my-12 sm:my-16">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#362864] dark:text-white mb-8 text-center">
-            Benefits for Community
+            Benefits for Citizens
           </h2>
           <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
             <BenefitItem text="Streamlined issue reporting process" />

@@ -9,7 +9,7 @@ export default function PotholeReportAnalysis() {
         {/* Intro Section */}
         <section className="space-y-6 text-center mb-12 mt-8 sm:mt-16">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight text-[#362864] dark:text-white">
-            Empower Your Community with AI-Powered Reporting
+            Empowering Community with AI-Powered Reporting
           </h1>
           <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#1E1E1E80] dark:text-gray-300 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             Use our advanced AI system to report and track local issues such as
@@ -26,7 +26,7 @@ export default function PotholeReportAnalysis() {
         {/* Features Section */}
         <section id="features" className="my-12 sm:my-16">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#362864] dark:text-white mb-8 text-center">
-            Key Features for Pothole Reporting
+            Key Features
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <FeatureCard
@@ -47,7 +47,7 @@ export default function PotholeReportAnalysis() {
         {/* Benefits Section */}
         <section id="benefits" className="my-12 sm:my-16">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#362864] dark:text-white mb-8 text-center">
-            Benefits for Your Community
+            Benefits for Community
           </h2>
           <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
             <BenefitItem text="Streamlined issue reporting process" />

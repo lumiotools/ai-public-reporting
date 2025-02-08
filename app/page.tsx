@@ -50,7 +50,7 @@ export default function PotholeReportAnalysis() {
             Benefits for Your Community
           </h2>
           <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
-          <BenefitItem text="Streamlined issue reporting process" />
+            <BenefitItem text="Streamlined issue reporting process" />
           <BenefitItem text="Improved response efficiency from local authorities" />
           <BenefitItem text="Enhanced community participation in local development" />
           <BenefitItem text="Data-driven insights for urban planning and management" />

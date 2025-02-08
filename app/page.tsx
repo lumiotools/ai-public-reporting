@@ -26,7 +26,7 @@ export default function PotholeReportAnalysis() {
         {/* Features Section */}
         <section id="features" className="my-12 sm:my-16">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#362864] dark:text-white mb-8 text-center">
-            Key Features
+            Key Features for Reporting
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             <FeatureCard

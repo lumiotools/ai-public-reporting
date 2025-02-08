@@ -53,7 +53,7 @@ export default function RootLayout({
             </div>
           </header>
           <main className="container mx-auto pb-10">{children}</main>
-          <footer className="bg-[#362864] text-white py-8">
+          <footer className="bg-[#362864] text-white py-6">
             <div className="container mx-auto text-center">
               <p>&copy; 2025 Citizens Reporting. All rights reserved.</p>
             </div>

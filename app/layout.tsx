@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
-        <div className="min-h-screen bg-gradient-to-br to-[#FFD5EB] via-[#FAEBF0] from-[#CFC6FF] bg-white">
+        <div className="min-h-screen bg-gradient-to-br to-[#FFD5EB]/[0.4] via-[#FAEBF0] from-[#CFC6FF]/[0.4] bg-white">
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
             <div className="container mx-auto flex h-14 items-center justify-between">
               <Link href="/" className="flex items-center">

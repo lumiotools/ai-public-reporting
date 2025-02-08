@@ -27,7 +27,7 @@ export default function RootLayout({
         <div className="min-h-screen bg-gradient-to-br to-[#FFD5EB] via-[#FAEBF0] from-[#CFC6FF] bg-white">
           <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm">
             <div className="container mx-auto flex h-14 items-center justify-between">
-              <Link href="/" className="flex items-center space-x-2">
+              <Link href="/" className="flex items-center">
                 <span className="font-semibold text-[#25313D]">Citizens Reporting</span>
               </Link>
               <nav className="hidden md:block">

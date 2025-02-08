@@ -156,8 +156,8 @@ export function ChatInterface() {
                 <div className="space-y-4 max-w-md">
                   <h2 className="text-lg sm:text-2xl font-semibold text-[#362864]">Welcome to Citizens Reporting</h2>
                   <p className="text-xs sm:text-lg text-[#1E1E1E80]">
-                    How can we help you today? Describe any local issues you'd like to report, or upload images of the
-                    problem.
+                  How can we help you today? Describe any local issues you'd like to report, or upload images of the
+                  problem.
                   </p>
                 </div>
               </div>

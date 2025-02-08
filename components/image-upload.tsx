@@ -90,7 +90,7 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
               variant="destructive"
               size="sm"
               onClick={clearImage}
-              className="gap-2 sm:text-lg text-xs bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
+              className="gap-2 sm:text-md text-xs bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
             >
               <X className="h-3 w-3 sm:h-4 sm:w-4" />
               Remove image

@@ -148,14 +148,14 @@ export function ChatInterface() {
 
   return (
     <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-[16px] bg-white/70 backdrop-blur-sm border-[#00000017] border-[1.4px] font-poppins">
-      <CardContent className="p-6">
-        <ScrollArea className="h-[500px] w-full pr-4">
-          <div className="p-4 space-y-4">
+      <CardContent className="p-2 sm:p-4">
+        <ScrollArea className="h-[400px] sm:h-[500px] w-full">
+          <div className="p-2 sm:p-4 space-y-4">
             {messages.length === 0 ? (
-              <div className="flex flex-col items-center justify-end h-[200px] text-center px-4 mb-16">
+              <div className="flex flex-col items-center justify-end h-[200px] text-center px-2 sm:px-4 mb-8 sm:mb-16">
                 <div className="space-y-4 max-w-md">
-                  <h2 className="text-2xl font-semibold text-[#362864]">Welcome to AI Public Reporting</h2>
-                  <p className="text-[#1E1E1E80]">
+                  <h2 className="text-lg sm:text-2xl font-semibold text-[#362864]">Welcome to Citizens Reporting</h2>
+                  <p className="text-xs sm:text-lg text-[#1E1E1E80]">
                     How can we help you today? Describe any local issues you'd like to report, or upload images of the
                     problem.
                   </p>
@@ -165,7 +165,7 @@ export function ChatInterface() {
               messages.map((message, index) => (
                 <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div
-                    className={`max-w-[80%] rounded-2xl px-6 py-3 shadow-sm ${
+                    className={`max-w-[90%] sm:max-w-[80%] rounded-2xl px-3 sm:px-6 py-2 sm:py-3 shadow-sm ${
                       message.role === "user"
                         ? "bg-[#362864ED] border-[1.4px] border-[#852FFF69] text-white"
                         : "bg-[#EBEBEB0D] border-[1.4px] border-[#00000017] text-[#1E1E1E]"
@@ -174,7 +174,7 @@ export function ChatInterface() {
                     {message.content.map((content, contentIndex) => (
                       <div key={contentIndex} className="space-y-2">
                         {content.type === "text" && content.text && (
-                          <div className="prose-sm max-w-none">
+                          <div className="prose-sm sm:prose-base max-w-none text-xs sm:text-base">
                             <ReactMarkdown>{content.text}</ReactMarkdown>
                           </div>
                         )}
@@ -185,7 +185,7 @@ export function ChatInterface() {
                               alt="Uploaded image"
                               width={200}
                               height={200}
-                              className="object-cover"
+                              className="object-cover w-full h-auto"
                             />
                           </div>
                         )}
@@ -197,7 +197,7 @@ export function ChatInterface() {
             )}
             {isTyping && (
               <div className="flex justify-start">
-                <div className="max-w-[80%] rounded-2xl px-6 py-3 border-[1.4px] border-[#00000017] bg-purple-50 text-[#1E1E1E]">
+                <div className="max-w-[90%] sm:max-w-[80%] rounded-2xl px-3 sm:px-6 py-2 sm:py-3 border-[1.4px] border-[#00000017] bg-purple-50 text-[#1E1E1E]">
                   <span className="animate-pulse">Thinking</span>
                   <span className="animate-pulse">...</span>
                 </div>
@@ -208,18 +208,18 @@ export function ChatInterface() {
           <div ref={messagesEndRef} />
         </ScrollArea>
       </CardContent>
-      <CardFooter className="flex items-center gap-2 p-4 border-t border-[#00000017]">
-        <div className="flex items-center w-full bg-purple-50/50 rounded-full border-[#00000017] border-[1.4px] overflow-hidden h-[48px] ">
+      <CardFooter className="flex items-center gap-2 p-2 sm:p-4 border-t border-[#00000017]">
+        <div className="flex items-center w-full bg-purple-50/50 rounded-full border-[#00000017] border-[1.4px] overflow-hidden h-[40px] sm:h-[48px]">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setShowImageUpload(!showImageUpload)}
-            className="text-[#1E1E1E] bg-[#36286426] hover:text-purple-900 hover:bg-purple-100 rounded-full ml-1 p-5 "
+            className="text-[#1E1E1E] bg-[#36286426] hover:text-purple-900 hover:bg-purple-100 rounded-full ml-1 p-3 sm:p-5"
           >
-            <Paperclip className="h-5 w-5" />
+            <Paperclip className="h-3 w-3 sm:h-5 sm:w-5" />
           </Button>
           <Input
-            className="flex-grow border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+            className="flex-grow border-0 focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent text-xs sm:text-md"
             type="text"
             placeholder="Message Chatbot..."
             value={input}
@@ -229,14 +229,13 @@ export function ChatInterface() {
           <Button
             onClick={handleSendMessage}
             size="sm"
-            className="bg-[#362864] hover:bg-[#362864] text-white rounded-full mr-1 px-4 py-5 flex items-center gap-2"
+            className="bg-[#362864] hover:bg-[#362864] text-white rounded-full mr-1 px-3 sm:px-4 py-4 sm:py-5 flex items-center gap-1 sm:gap-2 "
           >
-            <span className="font-medium">Send</span>
-            <ArrowUpRight className="h-4 w-4" />
+            <span className="text-sm sm:text-base font-medium">Send</span>
+            <ArrowUpRight className="h-3 w-3 sm:h-4 sm:w-4" />
           </Button>
         </div>
       </CardFooter>
-      {/* {summary && <SummaryDisplay summary={summary} />} */}
     </Card>
   )
 }

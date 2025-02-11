@@ -61,7 +61,7 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
           display:"none"
          }}}  />
           {preview ? (
-            <div className="relative w-full h-48">
+            <div className="relative w-full h-20 sm:h-48">
               <Image
                 src={preview || "/placeholder.svg"}
                 alt="Preview"
@@ -72,13 +72,13 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
             </div>
           ) : (
             <div className="space-y-2">
-              <ImageIcon className="mx-auto h-10 w-10 text-[#362864]" />
+              <ImageIcon className="mx-auto h-6 w-6 sm:h-10 sm:w-10 text-[#362864]" />
               {isDragActive ? (
-                <p className="text-sm text-[#362864]">Drop the image here...</p>
+                <p className="text-xs sm:text-sm text-[#362864]">Drop the image here...</p>
               ) : (
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-[#362864]">Drop image here or click to upload</p>
-                  <p className="text-xs text-[#1E1E1E80]">Supports JPG, PNG, GIF up to 10MB</p>
+                  <p className="text-xs sm:text-sm font-medium text-[#362864]">Drop image here or click to upload</p>
+                  <p className="text-xs sm:text-sm text-[#1E1E1E80]">Supports JPG, PNG, GIF up to 10MB</p>
                 </div>
               )}
             </div>
@@ -90,9 +90,9 @@ export const ImageUpload = forwardRef<{ clearImage: () => void }, ImageUploadPro
               variant="destructive"
               size="sm"
               onClick={clearImage}
-              className="gap-2 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
+              className="gap-2 sm:text-md text-xs bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3 w-3 sm:h-4 sm:w-4" />
               Remove image
             </Button>
           </div>

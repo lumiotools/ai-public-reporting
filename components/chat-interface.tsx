@@ -1,33 +1,34 @@
-"use client"
+"use client";
 
-import { useState, useRef, useCallback, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { ImageUpload } from "./image-upload"
-import { ArrowUpRight, Paperclip } from "lucide-react"
-import Image from "next/image"
-import ReactMarkdown from "react-markdown"
+import { useState, useRef, useCallback, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ImageUpload } from "./image-upload";
+import { ArrowUpRight, Paperclip } from "lucide-react";
+import Image from "next/image";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
-  role: string
-  content: Array<{ type: string; text?: string; image_url?: { url: string } }>
+  role: string;
+  content: Array<{ type: string; text?: string; image_url?: { url: string } }>;
 }
 
 export function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([])
-  const [input, setInput] = useState("")
-  const [base64Image, setBase64Image] = useState<string | null>(null)
-  const [summary, setSummary] = useState<string | null>(null)
-  const [isTyping, setIsTyping] = useState(false)
-  const [showImageUpload, setShowImageUpload] = useState(false)
-  const imageUploadRef = useRef<{ clearImage: () => void } | null>(null)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState("");
+  const [base64Image, setBase64Image] = useState<string | null>(null);
+  const [summary, setSummary] = useState<string | null>(null);
+  const [isTyping, setIsTyping] = useState(false);
+  const [showImageUpload, setShowImageUpload] = useState(false);
+  const imageUploadRef = useRef<{ clearImage: () => void } | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [chatId, setChatId] = useState<string | null>(null);
 
   const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   // const parseStreamChunk = (chunk: string) => {
   //   try {
@@ -50,54 +51,60 @@ export function ChatInterface() {
   // }
 
   const handleSendMessage = async () => {
-    if (!input.trim() && !base64Image) return
+    if (!input.trim() && !base64Image) return;
 
     const newMessage: Message = {
       role: "user",
       content: [{ type: "text", text: input || "Attached an image" }],
-    }
+    };
 
     if (base64Image) {
       newMessage.content.push({
         type: "image_url",
         image_url: { url: `data:image/jpeg;base64,${base64Image}` },
-      })
+      });
     }
 
-    setMessages((prevMessages) => [...prevMessages, newMessage])
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
 
     if (imageUploadRef.current) {
-      imageUploadRef.current.clearImage()
+      imageUploadRef.current.clearImage();
     }
-    setInput("")
-    setBase64Image(null)
-    setShowImageUpload(false)
-    setIsTyping(true)
+    setInput("");
+    setBase64Image(null);
+    setShowImageUpload(false);
+    setIsTyping(true);
 
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: [...messages, newMessage] }),
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to get response from AI")
+        throw new Error("Failed to get response from AI");
       }
 
-      const data = await response.json()
+      const data = await response.json();
       setMessages((prevMessages) => [
         ...prevMessages,
         {
           role: "assistant",
           content: [{ type: "text", text: data.message }],
         },
-      ])
+      ]);
 
-      if (data.summary) {
-        setSummary(data.summary)
-      }
-      
+      updateChatHistory([
+        ...messages,
+        newMessage,
+        { role: "assistant", content: [{ type: "text", text: data.message }] },
+      ]);
+
+      // if (data.summary) {
+      //   setSummary(data.summary)
+      // }
+
       // setIsTyping(false)
 
       // const reader = response.body?.getReader()
@@ -124,7 +131,7 @@ export function ChatInterface() {
       //   })
       // }
     } catch (error) {
-      console.error("Error:", error)
+      console.error("Error:", error);
       setMessages((prevMessages) => [
         ...prevMessages,
         {
@@ -136,15 +143,33 @@ export function ChatInterface() {
             },
           ],
         },
-      ])
+      ]);
     } finally {
-      setIsTyping(false)
+      setIsTyping(false);
     }
-  }
+  };
+
+  // **Function to update chat history**
+  const updateChatHistory = async (updatedMessages: Message[]) => {
+    try {
+      const res = await fetch("/api/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: chatId, messages: updatedMessages }),
+      });
+
+      const data = await res.json();
+      if (data.success && data.data?.id) {
+        setChatId(data.data.id); // Store chat ID for future updates
+      }
+    } catch (err) {
+      console.error("Failed to update chat history:", err);
+    }
+  };
 
   useEffect(() => {
-    scrollToBottom()
-  }, [messages, showImageUpload, isTyping]) // Added isTyping to dependencies
+    scrollToBottom();
+  }, [messages, showImageUpload, isTyping]); // Added isTyping to dependencies
 
   return (
     <Card className="w-full max-w-3xl mx-auto shadow-xl rounded-[16px] bg-white/70 backdrop-blur-sm border-[#00000017] border-[1.4px] font-poppins">
@@ -154,16 +179,23 @@ export function ChatInterface() {
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-end h-[200px] text-center px-4 mb-16">
                 <div className="space-y-4 max-w-md">
-                  <h2 className="text-2xl font-semibold text-[#362864]">Welcome to AI Public Reporting</h2>
+                  <h2 className="text-2xl font-semibold text-[#362864]">
+                    Welcome to AI Public Reporting
+                  </h2>
                   <p className="text-[#1E1E1E80]">
-                    How can we help you today? Describe any local issues you'd like to report, or upload images of the
-                    problem.
+                    How can we help you today? Describe any local issues you'd
+                    like to report, or upload images of the problem.
                   </p>
                 </div>
               </div>
             ) : (
               messages.map((message, index) => (
-                <div key={index} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  key={index}
+                  className={`flex ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
+                >
                   <div
                     className={`max-w-[80%] rounded-2xl px-6 py-3 shadow-sm ${
                       message.role === "user"
@@ -204,7 +236,9 @@ export function ChatInterface() {
               </div>
             )}
           </div>
-          {showImageUpload && <ImageUpload ref={imageUploadRef} onImageUpload={setBase64Image} />}
+          {showImageUpload && (
+            <ImageUpload ref={imageUploadRef} onImageUpload={setBase64Image} />
+          )}
           <div ref={messagesEndRef} />
         </ScrollArea>
       </CardContent>
@@ -238,6 +272,5 @@ export function ChatInterface() {
       </CardFooter>
       {/* {summary && <SummaryDisplay summary={summary} />} */}
     </Card>
-  )
+  );
 }
-
